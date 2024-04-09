@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://vkkif0ektt5p"]
+
+[ext_resource type="Script" path="res://dashboard.gd" id="1_rvumu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pys3j"]
+bg_color = Color(0.121569, 0.121569, 0.121569, 1)
+
+[node name="Dashboard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rvumu")
+
+[node name="LeftControl" type="Control" parent="."]
+layout_mode = 1
+anchor_right = 0.5
+anchor_bottom = 1.0
+
+[node name="PaddingControl" type="Control" parent="LeftControl"]
+layout_mode = 1
+anchor_left = 0.05
+anchor_right = 0.95
+anchor_bottom = 1.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftControl"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="RightControl" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pys3j")
