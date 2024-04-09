@@ -11,5 +11,6 @@ config_version=5
 [application]
 
 config/name="budget_app_gd"
+run/main_scene="res://dashboard.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"

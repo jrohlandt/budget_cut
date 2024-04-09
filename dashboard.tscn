@@ -1,9 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://vkkif0ektt5p"]
+[gd_scene load_steps=6 format=3 uid="uid://vkkif0ektt5p"]
 
 [ext_resource type="Script" path="res://dashboard.gd" id="1_rvumu"]
+[ext_resource type="Texture2D" uid="uid://7bljp5pa58bf" path="res://assets/pie_chart_circle_income.png" id="2_ap4xd"]
+[ext_resource type="Texture2D" uid="uid://dbkpgbau32616" path="res://assets/pie_chart_circle_expenses.png" id="3_mqc1f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pys3j"]
 bg_color = Color(0.121569, 0.121569, 0.121569, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4odk2"]
+bg_color = Color(0.172549, 0.172549, 0.172549, 1)
 
 [node name="Dashboard" type="Control"]
 layout_mode = 3
@@ -14,6 +19,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rvumu")
 
+[node name="BG" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pys3j")
+
 [node name="LeftControl" type="Control" parent="."]
 layout_mode = 1
 anchor_right = 0.5
@@ -22,14 +36,146 @@ anchor_bottom = 1.0
 [node name="PaddingControl" type="Control" parent="LeftControl"]
 layout_mode = 1
 anchor_left = 0.05
+anchor_top = 0.05
 anchor_right = 0.95
-anchor_bottom = 1.0
+anchor_bottom = 0.95
 
-[node name="HBoxContainer" type="HBoxContainer" parent="LeftControl"]
+[node name="TotalsHeader" type="HBoxContainer" parent="LeftControl/PaddingControl"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
+anchor_bottom = 0.2
 grow_horizontal = 2
+
+[node name="Income" type="VBoxContainer" parent="LeftControl/PaddingControl/TotalsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Label" type="RichTextLabel" parent="LeftControl/PaddingControl/TotalsHeader/Income"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Income"
+fit_content = true
+
+[node name="Value" type="RichTextLabel" parent="LeftControl/PaddingControl/TotalsHeader/Income"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][b]55000"
+fit_content = true
+
+[node name="PieChart" type="BoxContainer" parent="LeftControl/PaddingControl/TotalsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="LeftControl/PaddingControl/TotalsHeader/PieChart"]
+custom_minimum_size = Vector2(116, 100)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+value = 37.0
+fill_mode = 4
+nine_patch_stretch = true
+texture_under = ExtResource("2_ap4xd")
+texture_progress = ExtResource("3_mqc1f")
+
+[node name="Expenses" type="VBoxContainer" parent="LeftControl/PaddingControl/TotalsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Label" type="RichTextLabel" parent="LeftControl/PaddingControl/TotalsHeader/Expenses"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Expenses"
+fit_content = true
+
+[node name="Value" type="RichTextLabel" parent="LeftControl/PaddingControl/TotalsHeader/Expenses"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][b]34012"
+fit_content = true
+
+[node name="TransactionsContainer" type="Control" parent="LeftControl/PaddingControl"]
+layout_mode = 1
+anchor_top = 0.3
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LeftControl/PaddingControl/TransactionsContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TransactionsHeaders" type="HBoxContainer" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Date" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsHeaders"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Date"
+
+[node name="Name" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsHeaders"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name
+"
+
+[node name="Amount" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsHeaders"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Amount"
+
+[node name="Category" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsHeaders"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Category"
+
+[node name="TransactionsList" type="ScrollContainer" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Date" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2024-01-01"
+fit_content = true
+
+[node name="Name" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Netflix and chill tonight"
+fit_content = true
+
+[node name="Amount" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "99.90"
+fit_content = true
+
+[node name="Category" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Entertainment"
+fit_content = true
+
+[node name="ActionsButton" type="Button" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
+layout_mode = 2
+text = "..."
 
 [node name="RightControl" type="Control" parent="."]
 layout_mode = 1
@@ -37,11 +183,11 @@ anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="RightControl"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_pys3j")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4odk2")
