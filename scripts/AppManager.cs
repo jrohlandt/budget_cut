@@ -63,9 +63,11 @@ public partial class AppManager : Control
             TransactionRow row = transactionRow.Instantiate<TransactionRow>();
             row.CurrentTransaction = currentBudget.Transactions[i];
 			row.DeleteTransactionPressed += OnDeleteTransactionButtonPressed; 
+			row.ShowTransactionModal += ShowTransactionModal;
             transactionList.AddChild(row);
         }
     }
+
 
     private void OnDeleteTransactionButtonPressed(string id)
     {
@@ -109,23 +111,25 @@ public partial class AppManager : Control
 		
 	}
 
-    private void OnCreateTransaction(string name, float amount, string date, string category, bool isIncome)
+	private void ShowTransactionModal(string id)
+    {
+		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
+		modal.Categories = TransactionCategories;
+		modal.CreateTransaction += OnCreateTransaction;
+		Transaction t = currentBudget.FindTransaction(id);
+		if (t != null) modal.CurrentTransaction = t;
+		AddChild(modal);
+    }
+
+    private void OnCreateTransaction(string id, string name, float amount, string date, string category, bool isIncome)
     {
 		TransactionCategory selectedCategory = TransactionCategories[category];
 
-        Transaction t = new Transaction()
-		{
-			BudgetId = currentBudget.Id,
-			Name = name,
-			Amount = amount,
-			TransactionDate = DateTime.Parse(date),
-			Category = selectedCategory,
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-			IsIncome = isIncome,
-		};
+		if (id != "")
+			currentBudget.UpdateTransaction(id, name, amount, date, selectedCategory, isIncome);
+		else
+			currentBudget.CreateTransaction(name, amount, date, selectedCategory, isIncome);
 
-		currentBudget.Transactions.Add(t);
 		RefreshTotals();
 		RefreshTransactionList();
     }

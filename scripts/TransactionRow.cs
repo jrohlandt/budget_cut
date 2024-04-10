@@ -1,4 +1,6 @@
+using System;
 using Godot;
+
 using System;
 
 namespace BudgetApp;
@@ -8,6 +10,8 @@ public partial class TransactionRow : HBoxContainer
 	[Signal]
 	public delegate void DeleteTransactionPressedEventHandler(string id);
 
+	[Signal]
+	public delegate void ShowTransactionModalEventHandler(string id);
 	public Transaction CurrentTransaction;
 
 	// Called when the node enters the scene tree for the first time.
@@ -23,10 +27,17 @@ public partial class TransactionRow : HBoxContainer
 		GetNode<RichTextLabel>("Amount").Text = CurrentTransaction.Amount.ToString();
 		// GetNode<RichTextLabel>("Amount").Modulate = Color(0, 63, 63, 1);
 		GetNode<RichTextLabel>("Category").Text = CurrentTransaction.Category.Name;
+
+		GetNode<Button>("ActionButtons/HBoxContainer/EditButton").Pressed += EditButtonPressed;
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+    private void EditButtonPressed()
+    {
+		EmitSignal(SignalName.ShowTransactionModal, CurrentTransaction.Id.ToString());
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
 	{
 	}
 

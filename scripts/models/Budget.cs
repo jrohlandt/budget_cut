@@ -34,4 +34,48 @@ public class Budget
         }
         return result;
     }
+
+    
+	public Transaction FindTransaction(string id)
+	{
+        Transaction result = null;
+        if (id == "") return result;
+		foreach (Transaction t in Transactions)
+        {
+            if (t.Id.ToString() == id)
+                return t;
+        }
+        return result;
+	}
+
+    public Transaction CreateTransaction(string name, float amount, string date, TransactionCategory category, bool isIncome)
+    {
+        Transaction t = new Transaction()
+		{
+			BudgetId = Id,
+			Name = name,
+			Amount = amount,
+			TransactionDate = DateTime.Parse(date),
+			Category = category,
+			CreatedAt = DateTime.Now,
+			UpdatedAt = DateTime.Now,
+			IsIncome = isIncome,
+		};
+
+		Transactions.Add(t);
+        return t;
+    }
+
+    public Transaction UpdateTransaction(string id, string name, float amount, string date, TransactionCategory category, bool isIncome)
+    {
+        Transaction tr = FindTransaction(id);
+        tr.Name = name;
+        tr.Amount = amount;
+        tr.TransactionDate = DateTime.Parse(date);
+        tr.Category = category;
+        tr.UpdatedAt = DateTime.Now;
+        tr.IsIncome = isIncome;
+
+        return tr;
+    }
 }
