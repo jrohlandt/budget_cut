@@ -13,4 +13,25 @@ public class Budget
     public List<Transaction> Transactions;
     public DateTime CreatedAt;
     public DateTime UpdatedAt;
+
+    public float CalculateIncome()
+    {
+        float result = 0;
+        foreach (Transaction t in Transactions)
+        {
+            if (t.IsIncome) result += t.Amount;
+        }
+        return result;
+    }
+
+    
+    public float CalculateExpenses()
+    {
+        float result = 0;
+        foreach (Transaction t in Transactions)
+        {
+            if (!t.IsIncome) result += t.Amount;
+        }
+        return result;
+    }
 }

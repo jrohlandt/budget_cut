@@ -18,6 +18,7 @@ public partial class TransactionRow : HBoxContainer
 		GetNode<RichTextLabel>("Date").Text = CurrentTransaction.TransactionDate.ToString("yyyy/MM/dd");
 		GetNode<RichTextLabel>("Name").Text = CurrentTransaction.Name;
 		GetNode<RichTextLabel>("Amount").Text = CurrentTransaction.Amount.ToString();
+		// GetNode<RichTextLabel>("Amount").Modulate = Color(0, 63, 63, 1);
 		GetNode<RichTextLabel>("Category").Text = CurrentTransaction.Category.Name;
 	}
 

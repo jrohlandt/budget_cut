@@ -102,7 +102,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Category"
 
-[node name="LineEdit" type="OptionButton" parent="Panel/Content/Category"]
+[node name="OptionButton" type="OptionButton" parent="Panel/Content/Category"]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -118,7 +118,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Income"
 
-[node name="LineEdit" type="CheckButton" parent="Panel/Content/Income"]
+[node name="CheckButton" type="CheckButton" parent="Panel/Content/Income"]
 layout_mode = 2
 size_flags_horizontal = 3
 

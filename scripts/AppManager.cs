@@ -21,37 +21,80 @@ public partial class AppManager : Control
 
 	VBoxContainer transactionList;
 
-	Budget currentBudget;
+	private static Budget currentBudget;
 
 	public override void _Ready()
-	{
-		currentBudget = GeneratePlaceholderData();
-		GD.Print("CurrentBudget: " + currentBudget.StartDate);
-		transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
+    {
+        currentBudget = GeneratePlaceholderData();
+        GD.Print("CurrentBudget: " + currentBudget.StartDate);
+        transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
 
-		for (int i = 0; i < currentBudget.Transactions.Count; i++)
-		{
-			TransactionRow row = transactionRow.Instantiate<TransactionRow>();
-			row.CurrentTransaction = currentBudget.Transactions[i];
-			transactionList.AddChild(row);
-		}
+		RefreshTotals();
+        RefreshTransactionList();
+    }
+
+	private void RefreshTotals()
+	{
+		HBoxContainer header = GetNode<HBoxContainer>("LeftControl/PaddingControl/TotalsHeader");
+
+		float income = currentBudget.CalculateIncome();
+		float expenses = currentBudget.CalculateExpenses();
+		header.GetNode<RichTextLabel>("Income/Value").Text = "[center][b]" + income.ToString();
+		header.GetNode<RichTextLabel>("Expenses/Value").Text = "[center][b]" + expenses.ToString();
+		TextureProgressBar piechart = header.GetNode<TextureProgressBar>("PieChart/TextureProgressBar");
+		piechart.MaxValue = income;
+		piechart.Value = expenses;
 	}
 
-	public override void _Process(double delta)
+    private void RefreshTransactionList()
+    {
+		foreach (Node c in transactionList.GetChildren())
+		{
+			c.QueueFree();
+		}
+
+        for (int i = 0; i < currentBudget.Transactions.Count; i++)
+        {
+            TransactionRow row = transactionRow.Instantiate<TransactionRow>();
+            row.CurrentTransaction = currentBudget.Transactions[i];
+            transactionList.AddChild(row);
+        }
+    }
+
+    public override void _Process(double delta)
 	{
 	}
 
 	private void _on_create_transaction_button_pressed()
 	{
 		GD.Print("Pressed");
-		// GetNode<Control>("TransactionFormModal").Visible = true;
 		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
+		modal.CreateTransaction += OnCreateTransaction;
 		AddChild(modal);
 		
 	}
 
+    private void OnCreateTransaction(string name, float amount, string date, string category, bool isIncome)
+    {
+        Transaction t = new Transaction()
+		{
+			BudgetId = currentBudget.Id,
+			Name = name,
+			Amount = amount,
+			TransactionDate = DateTime.Parse(date),
+			Category = new TransactionCategory() {Name = category, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now},
+			CreatedAt = DateTime.Now,
+			UpdatedAt = DateTime.Now,
+			IsIncome = isIncome,
+		};
 
-	private Budget GeneratePlaceholderData()
+		currentBudget.Transactions.Add(t);
+		RefreshTotals();
+		RefreshTransactionList();
+    }
+
+
+    private Budget GeneratePlaceholderData()
 	{
 		Budget budget = new Budget()
 		{
@@ -69,6 +112,7 @@ public partial class AppManager : Control
 		TransactionCategory rentCategory = new TransactionCategory(){Name = "rent", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
 		TransactionCategory carCategory = new TransactionCategory(){Name = "car", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
 		TransactionCategory medicalCategory = new TransactionCategory(){Name = "medical", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
+		TransactionCategory freelanceCategory = new TransactionCategory(){Name = "freelance", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
 
 
 		budget.Transactions.Add(new Transaction(){
@@ -89,6 +133,17 @@ public partial class AppManager : Control
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
+		});
+
+		budget.Transactions.Add(new Transaction(){
+			BudgetId = budget.Id,
+			Name = "Super Groomers Puppy Parlor PTY LTD",
+			Amount = 41013f,
+			Category = freelanceCategory,
+			TransactionDate = new DateTime(2024, 05, 01),
+			CreatedAt = DateTime.Now,
+			UpdatedAt = DateTime.Now,
+			IsIncome = true,
 		});
 
 		budget.Transactions.Add(new Transaction(){
