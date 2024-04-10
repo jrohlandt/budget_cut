@@ -1,7 +1,7 @@
 using Godot;
 using System;
-using System.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BudgetApp;
 public partial class AppManager : Control
@@ -16,22 +16,23 @@ public partial class AppManager : Control
 
 	[Export]
 	PackedScene transactionEditModal;
-
 	#endregion
 
 	VBoxContainer transactionList;
 
 	private static Budget currentBudget;
+	public static Dictionary<string, TransactionCategory> TransactionCategories = new Dictionary<string, TransactionCategory>();
 
 	public override void _Ready()
     {
         currentBudget = GeneratePlaceholderData();
-        GD.Print("CurrentBudget: " + currentBudget.StartDate);
         transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
 
 		RefreshTotals();
         RefreshTransactionList();
     }
+
+	public override void _Process(double delta) {}
 
 	private void RefreshTotals()
 	{
@@ -61,14 +62,10 @@ public partial class AppManager : Control
         }
     }
 
-    public override void _Process(double delta)
-	{
-	}
-
 	private void _on_create_transaction_button_pressed()
 	{
-		GD.Print("Pressed");
 		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
+		modal.Categories = TransactionCategories;
 		modal.CreateTransaction += OnCreateTransaction;
 		AddChild(modal);
 		
@@ -76,13 +73,15 @@ public partial class AppManager : Control
 
     private void OnCreateTransaction(string name, float amount, string date, string category, bool isIncome)
     {
+		TransactionCategory selectedCategory = TransactionCategories[category];
+
         Transaction t = new Transaction()
 		{
 			BudgetId = currentBudget.Id,
 			Name = name,
 			Amount = amount,
 			TransactionDate = DateTime.Parse(date),
-			Category = new TransactionCategory() {Name = category, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now},
+			Category = selectedCategory,
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
 			IsIncome = isIncome,
@@ -93,6 +92,25 @@ public partial class AppManager : Control
 		RefreshTransactionList();
     }
 
+	private void CreateTransactionCategory(string name)
+	{
+		int listId;
+		if (TransactionCategories.Count == 0)
+		{
+			listId = 0;
+		}
+		else 
+		{
+			int highestId = 0;
+			foreach (var c in TransactionCategories.Values.ToArray())
+			{
+				if (c.ListId > highestId) highestId = c.ListId;
+			}
+			listId = highestId + 1;
+		}
+
+		TransactionCategories[name] = new TransactionCategory(){ListId = listId, Name = name, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
+	}
 
     private Budget GeneratePlaceholderData()
 	{
@@ -107,19 +125,20 @@ public partial class AppManager : Control
 		};
 
 
+		List<string> categories = new List<string>{
+			"food", "car", "rent", "medical", "freelance", "other",
+		};
 
-		TransactionCategory foodCategory = new TransactionCategory(){Name = "food", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
-		TransactionCategory rentCategory = new TransactionCategory(){Name = "rent", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
-		TransactionCategory carCategory = new TransactionCategory(){Name = "car", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
-		TransactionCategory medicalCategory = new TransactionCategory(){Name = "medical", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
-		TransactionCategory freelanceCategory = new TransactionCategory(){Name = "freelance", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
-
+		foreach (string c in categories)
+		{
+			CreateTransactionCategory(c);
+		}
 
 		budget.Transactions.Add(new Transaction(){
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -129,7 +148,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Hamburger patties beef 800g",
 			Amount = 109.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -139,7 +158,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Super Groomers Puppy Parlor PTY LTD",
 			Amount = 41013f,
-			Category = freelanceCategory,
+			Category = TransactionCategories["freelance"],
 			TransactionDate = new DateTime(2024, 05, 01),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -150,7 +169,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Pork sausages 800g",
 			Amount = 60f,
-			Category = rentCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -161,7 +180,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Rent",
 			Amount = 9000,
-			Category = rentCategory,
+			Category = TransactionCategories["rent"],
 			TransactionDate = new DateTime(2024, 04, 30),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -172,7 +191,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Car Insurance",
 			Amount = 1053,
-			Category = carCategory,
+			Category = TransactionCategories["car"],
 			TransactionDate = new DateTime(2024, 04, 30),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -183,7 +202,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Medical Insurance",
 			Amount = 2700,
-			Category = medicalCategory,
+			Category = TransactionCategories["medical"],
 			TransactionDate = new DateTime(2024, 04, 30),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -193,7 +212,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -203,7 +222,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -214,7 +233,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 200f,
-			Category = carCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -224,7 +243,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -234,7 +253,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -244,7 +263,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -254,7 +273,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -264,7 +283,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -274,7 +293,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -284,7 +303,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -294,7 +313,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
@@ -304,7 +323,7 @@ public partial class AppManager : Control
 			BudgetId = budget.Id,
 			Name = "Milk",
 			Amount = 20.99f,
-			Category = foodCategory,
+			Category = TransactionCategories["food"],
 			TransactionDate = new DateTime(2024, 04, 03),
 			CreatedAt = DateTime.Now,
 			UpdatedAt = DateTime.Now,
