@@ -49,6 +49,7 @@ public partial class AppManager : Control
 
     private void RefreshTransactionList()
     {
+		// Clear list
 		foreach (Node c in transactionList.GetChildren())
 		{
 			c.QueueFree();
