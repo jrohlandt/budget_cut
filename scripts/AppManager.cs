@@ -16,6 +16,9 @@ public partial class AppManager : Control
 
 	[Export]
 	PackedScene transactionEditModal;
+
+	[Export]
+	PackedScene deleteTransactionModal;
 	#endregion
 
 	VBoxContainer transactionList;
@@ -59,11 +62,45 @@ public partial class AppManager : Control
         {
             TransactionRow row = transactionRow.Instantiate<TransactionRow>();
             row.CurrentTransaction = currentBudget.Transactions[i];
+			row.DeleteTransactionPressed += OnDeleteTransactionButtonPressed; 
             transactionList.AddChild(row);
         }
     }
 
-	private void _on_create_transaction_button_pressed()
+    private void OnDeleteTransactionButtonPressed(string id)
+    {
+		Transaction tr = null;
+
+		foreach (Transaction t in currentBudget.Transactions)
+		{
+			if (t.Id.ToString() == id) tr = t;
+		}
+
+		if (tr == null) return;
+
+		DeleteTransactionModal modal = deleteTransactionModal.Instantiate<DeleteTransactionModal>();
+		modal.CurrentTransaction = tr;
+		modal.DeleteTransaction += OnDeleteTransaction;
+		AddChild(modal); 
+    }
+
+    private void OnDeleteTransaction(string id)
+    {
+		List<Transaction> list = new List<Transaction>();
+
+		foreach (Transaction t in currentBudget.Transactions)
+		{
+			if (t.Id.ToString() != id) 
+				list.Add(t);
+		}
+
+		currentBudget.Transactions = list;
+		RefreshTotals();
+		RefreshTransactionList();
+    }
+
+
+    private void _on_create_transaction_button_pressed()
 	{
 		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
 		modal.Categories = TransactionCategories;

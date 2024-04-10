@@ -1,0 +1,81 @@
+[gd_scene load_steps=4 format=3 uid="uid://ca8mu7csaqxlb"]
+
+[ext_resource type="StyleBox" uid="uid://dvq63jigwof83" path="res://ui/styles/modal_style.tres" id="1_2a1yn"]
+[ext_resource type="Script" path="res://scripts/DeleteTransactionModal.cs" id="1_u0c6p"]
+[ext_resource type="StyleBox" uid="uid://dpoeu5yb7x6ko" path="res://ui/styles/modal_bg_style.tres" id="2_d3pyh"]
+
+[node name="DeleteTransactionModal" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_u0c6p")
+
+[node name="BG" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("2_d3pyh")
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_2a1yn")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+
+[node name="Heading" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/Heading"]
+layout_mode = 2
+text = "Delete Transaction"
+
+[node name="Name" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/Name"]
+layout_mode = 2
+text = "alfsdfjeofwa ofjwoefjewof "
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="Panel/VBoxContainer/Buttons"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="DeleteButton" type="Button" parent="Panel/VBoxContainer/Buttons"]
+layout_mode = 2
+text = "Delete
+"

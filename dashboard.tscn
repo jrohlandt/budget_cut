@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://vkkif0ektt5p"]
+[gd_scene load_steps=12 format=3 uid="uid://vkkif0ektt5p"]
 
 [ext_resource type="Script" path="res://scripts/AppManager.cs" id="1_5qdfg"]
 [ext_resource type="PackedScene" uid="uid://cp66j6d5jcadn" path="res://ui/transactions/transaction_row.tscn" id="2_bcvfx"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dmh6uc2wipvb3" path="res://ui/transactions/transaction_create_modal.tscn" id="3_pe00i"]
 [ext_resource type="PackedScene" uid="uid://dejie8dpqp3ev" path="res://ui/transactions/transactions_list.tscn" id="4_ekigb"]
 [ext_resource type="Texture2D" uid="uid://cimtg2co317t5" path="res://assets/pie_chart_circle_expenses_150px.png" id="4_lekvb"]
+[ext_resource type="PackedScene" uid="uid://ca8mu7csaqxlb" path="res://ui/transactions/delete_transaction_modal.tscn" id="4_u2w32"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pys3j"]
 bg_color = Color(0.121569, 0.121569, 0.121569, 1)
@@ -33,6 +34,7 @@ grow_vertical = 2
 script = ExtResource("1_5qdfg")
 transactionRow = ExtResource("2_bcvfx")
 transactionCreateModal = ExtResource("3_pe00i")
+deleteTransactionModal = ExtResource("4_u2w32")
 
 [node name="BG" type="Panel" parent="."]
 layout_mode = 1
@@ -136,18 +138,25 @@ text = "Date"
 [node name="Name" type="RichTextLabel" parent="LeftControl/PaddingControl/Content/VBoxContainer/TransactionsHeaders"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Name
+bbcode_enabled = true
+text = "[center]Name
 "
 
 [node name="Amount" type="RichTextLabel" parent="LeftControl/PaddingControl/Content/VBoxContainer/TransactionsHeaders"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Amount"
+bbcode_enabled = true
+text = "[center]Amount"
 
 [node name="Category" type="RichTextLabel" parent="LeftControl/PaddingControl/Content/VBoxContainer/TransactionsHeaders"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Category"
+bbcode_enabled = true
+text = "[center]Category"
+
+[node name="Actions" type="RichTextLabel" parent="LeftControl/PaddingControl/Content/VBoxContainer/TransactionsHeaders"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="TransactionsList" parent="LeftControl/PaddingControl/Content/VBoxContainer" instance=ExtResource("4_ekigb")]
 layout_mode = 2
@@ -337,10 +346,5 @@ offset_bottom = 15.5
 grow_horizontal = 0
 grow_vertical = 2
 text = "Save"
-
-[node name="Panel" type="Panel" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
 
 [connection signal="pressed" from="LeftControl/PaddingControl/HBoxContainer/CreateTransactionButton" to="." method="_on_create_transaction_button_pressed"]

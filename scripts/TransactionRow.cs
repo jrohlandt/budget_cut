@@ -5,6 +5,9 @@ namespace BudgetApp;
 
 public partial class TransactionRow : HBoxContainer
 {
+	[Signal]
+	public delegate void DeleteTransactionPressedEventHandler(string id);
+
 	public Transaction CurrentTransaction;
 
 	// Called when the node enters the scene tree for the first time.
@@ -25,5 +28,10 @@ public partial class TransactionRow : HBoxContainer
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+	}
+
+	private void _on_delete_button_pressed()
+	{
+		EmitSignal(SignalName.DeleteTransactionPressed, CurrentTransaction.Id.ToString());
 	}
 }

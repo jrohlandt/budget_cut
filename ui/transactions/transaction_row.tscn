@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/TransactionRow.cs" id="1_3uc08"]
 
 [node name="TransactionRow" type="HBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
 size_flags_horizontal = 3
 script = ExtResource("1_3uc08")
 
@@ -34,6 +35,21 @@ size_flags_horizontal = 3
 text = "Entertainment"
 fit_content = true
 
-[node name="ActionsButton" type="Button" parent="."]
+[node name="ActionButtons" type="VBoxContainer" parent="."]
 layout_mode = 2
-text = "..."
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ActionButtons"]
+layout_mode = 2
+
+[node name="EditButton" type="Button" parent="ActionButtons/HBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+text = "e"
+
+[node name="DeleteButton" type="Button" parent="ActionButtons/HBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+text = "x"
+
+[connection signal="pressed" from="ActionButtons/HBoxContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
