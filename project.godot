@@ -17,4 +17,4 @@ config/icon="res://icon.svg"
 
 [dotnet]
 
-project/assembly_name="budget_app_gd"
+project/assembly_name="BudgetApp"
