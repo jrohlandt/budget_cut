@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="budget_app_csharp"
+config/name="Budget Cut"
 run/main_scene="res://dashboard.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 config/icon="res://icon.svg"
