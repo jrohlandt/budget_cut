@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://cp66j6d5jcadn"]
+
+[ext_resource type="Script" path="res://scripts/TransactionRow.cs" id="1_3uc08"]
+
+[node name="TransactionRow" type="HBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_3uc08")
+
+[node name="Date" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2024-01-01"
+fit_content = true
+
+[node name="Name" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Netflix and chill tonight"
+fit_content = true
+
+[node name="Amount" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "99.90"
+fit_content = true
+
+[node name="Category" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Entertainment"
+fit_content = true
+
+[node name="ActionsButton" type="Button" parent="."]
+layout_mode = 2
+text = "..."

@@ -1,14 +1,27 @@
-[gd_scene load_steps=6 format=3 uid="uid://vkkif0ektt5p"]
+[gd_scene load_steps=11 format=3 uid="uid://vkkif0ektt5p"]
 
-[ext_resource type="Script" path="res://dashboard.gd" id="1_rvumu"]
-[ext_resource type="Texture2D" uid="uid://7bljp5pa58bf" path="res://assets/pie_chart_circle_income.png" id="2_ap4xd"]
-[ext_resource type="Texture2D" uid="uid://dbkpgbau32616" path="res://assets/pie_chart_circle_expenses.png" id="3_mqc1f"]
+[ext_resource type="Script" path="res://scripts/AppManager.cs" id="1_5qdfg"]
+[ext_resource type="PackedScene" uid="uid://cp66j6d5jcadn" path="res://ui/transactions/transaction_row.tscn" id="2_bcvfx"]
+[ext_resource type="Texture2D" uid="uid://ddqghyrc0dkjc" path="res://assets/pie_chart_circle_income_150px.png" id="3_dx10t"]
+[ext_resource type="PackedScene" uid="uid://dmh6uc2wipvb3" path="res://ui/transactions/transaction_create_modal.tscn" id="3_pe00i"]
+[ext_resource type="PackedScene" uid="uid://dejie8dpqp3ev" path="res://ui/transactions/transactions_list.tscn" id="4_ekigb"]
+[ext_resource type="Texture2D" uid="uid://cimtg2co317t5" path="res://assets/pie_chart_circle_expenses_150px.png" id="4_lekvb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pys3j"]
 bg_color = Color(0.121569, 0.121569, 0.121569, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4odk2"]
 bg_color = Color(0.172549, 0.172549, 0.172549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dyny1"]
+bg_color = Color(0, 0, 0, 0.74902)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yx62n"]
+bg_color = Color(0.14902, 0.14902, 0.14902, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [node name="Dashboard" type="Control"]
 layout_mode = 3
@@ -17,7 +30,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_rvumu")
+script = ExtResource("1_5qdfg")
+transactionRow = ExtResource("2_bcvfx")
+transactionCreateModal = ExtResource("3_pe00i")
 
 [node name="BG" type="Panel" parent="."]
 layout_mode = 1
@@ -70,14 +85,11 @@ size_flags_horizontal = 3
 alignment = 1
 
 [node name="TextureProgressBar" type="TextureProgressBar" parent="LeftControl/PaddingControl/TotalsHeader/PieChart"]
-custom_minimum_size = Vector2(116, 100)
 layout_mode = 2
-size_flags_stretch_ratio = 0.0
 value = 37.0
 fill_mode = 4
-nine_patch_stretch = true
-texture_under = ExtResource("2_ap4xd")
-texture_progress = ExtResource("3_mqc1f")
+texture_under = ExtResource("3_dx10t")
+texture_progress = ExtResource("4_lekvb")
 
 [node name="Expenses" type="VBoxContainer" parent="LeftControl/PaddingControl/TotalsHeader"]
 layout_mode = 2
@@ -96,13 +108,13 @@ bbcode_enabled = true
 text = "[center][b]34012"
 fit_content = true
 
-[node name="TransactionsContainer" type="Control" parent="LeftControl/PaddingControl"]
+[node name="Content" type="Control" parent="LeftControl/PaddingControl"]
 layout_mode = 1
 anchor_top = 0.3
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.9
 
-[node name="VBoxContainer" type="VBoxContainer" parent="LeftControl/PaddingControl/TransactionsContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="LeftControl/PaddingControl/Content"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -110,72 +122,48 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TransactionsHeaders" type="HBoxContainer" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer"]
+[node name="TransactionsHeaders" type="HBoxContainer" parent="LeftControl/PaddingControl/Content/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="Date" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsHeaders"]
+[node name="Date" type="RichTextLabel" parent="LeftControl/PaddingControl/Content/VBoxContainer/TransactionsHeaders"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Date"
 
-[node name="Name" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsHeaders"]
+[node name="Name" type="RichTextLabel" parent="LeftControl/PaddingControl/Content/VBoxContainer/TransactionsHeaders"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Name
 "
 
-[node name="Amount" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsHeaders"]
+[node name="Amount" type="RichTextLabel" parent="LeftControl/PaddingControl/Content/VBoxContainer/TransactionsHeaders"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Amount"
 
-[node name="Category" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsHeaders"]
+[node name="Category" type="RichTextLabel" parent="LeftControl/PaddingControl/Content/VBoxContainer/TransactionsHeaders"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Category"
 
-[node name="TransactionsList" type="ScrollContainer" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer"]
+[node name="TransactionsList" parent="LeftControl/PaddingControl/Content/VBoxContainer" instance=ExtResource("4_ekigb")]
 layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftControl/PaddingControl"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 2
 
-[node name="Date" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
+[node name="CreateTransactionButton" type="Button" parent="LeftControl/PaddingControl/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "2024-01-01"
-fit_content = true
-
-[node name="Name" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Netflix and chill tonight"
-fit_content = true
-
-[node name="Amount" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-size_flags_horizontal = 3
-text = "99.90"
-fit_content = true
-
-[node name="Category" type="RichTextLabel" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Entertainment"
-fit_content = true
-
-[node name="ActionsButton" type="Button" parent="LeftControl/PaddingControl/TransactionsContainer/VBoxContainer/TransactionsList/HBoxContainer"]
-layout_mode = 2
-text = "..."
+text = "+ New Transaction"
 
 [node name="RightControl" type="Control" parent="."]
 layout_mode = 1
@@ -191,3 +179,167 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4odk2")
+
+[node name="TransactionFormModal2" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_right = 0.5
+anchor_bottom = 1.0
+
+[node name="BG" type="Panel" parent="TransactionFormModal2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dyny1")
+
+[node name="Panel" type="Panel" parent="TransactionFormModal2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.2
+anchor_right = 0.8
+anchor_bottom = 0.8
+theme_override_styles/panel = SubResource("StyleBoxFlat_yx62n")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TransactionFormModal2/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.05
+anchor_right = 0.95
+anchor_bottom = 0.95
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TransactionFormModal2/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]Add Transaction"
+fit_content = true
+
+[node name="Name" type="HBoxContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TransactionFormModal2/Panel/VBoxContainer/Name"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Name"
+
+[node name="LineEdit" type="LineEdit" parent="TransactionFormModal2/Panel/VBoxContainer/Name"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer2" type="MarginContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Amount" type="HBoxContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TransactionFormModal2/Panel/VBoxContainer/Amount"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Amount"
+
+[node name="LineEdit" type="LineEdit" parent="TransactionFormModal2/Panel/VBoxContainer/Amount"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Date" type="HBoxContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TransactionFormModal2/Panel/VBoxContainer/Date"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Date"
+
+[node name="LineEdit" type="LineEdit" parent="TransactionFormModal2/Panel/VBoxContainer/Date"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer3" type="MarginContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Category" type="HBoxContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TransactionFormModal2/Panel/VBoxContainer/Category"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Category"
+
+[node name="LineEdit" type="OptionButton" parent="TransactionFormModal2/Panel/VBoxContainer/Category"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer5" type="MarginContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Income" type="HBoxContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TransactionFormModal2/Panel/VBoxContainer/Income"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Income"
+
+[node name="LineEdit" type="CheckButton" parent="TransactionFormModal2/Panel/VBoxContainer/Income"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer4" type="MarginContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TransactionFormModal2/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="TransactionFormModal2/Panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="TransactionFormModal2/Panel/VBoxContainer/HBoxContainer/Control2"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -15.5
+offset_right = 80.0
+offset_bottom = 15.5
+grow_vertical = 2
+text = "Cancel"
+
+[node name="Control" type="Control" parent="TransactionFormModal2/Panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="TransactionFormModal2/Panel/VBoxContainer/HBoxContainer/Control"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -44.0
+offset_top = -15.5
+offset_bottom = 15.5
+grow_horizontal = 0
+grow_vertical = 2
+text = "Save"
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="pressed" from="LeftControl/PaddingControl/HBoxContainer/CreateTransactionButton" to="." method="_on_create_transaction_button_pressed"]

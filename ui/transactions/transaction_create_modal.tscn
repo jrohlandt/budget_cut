@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmh6uc2wipvb3"]
+
+[ext_resource type="PackedScene" uid="uid://t1qhwsqtqrtp" path="res://ui/transactions/transaction_form_modal.tscn" id="1_1reou"]
+[ext_resource type="Script" path="res://scripts/TransactionCreateModal.cs" id="1_85vtl"]
+
+[node name="TransactionCreateModal" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_85vtl")
+
+[node name="TransactionFormModal" parent="." instance=ExtResource("1_1reou")]
+layout_mode = 1
