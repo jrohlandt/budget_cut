@@ -32,7 +32,9 @@ public partial class AppManager : Control
 
 	public override void _Ready()
     {
-        currentBudget = GeneratePlaceholderData();
+        // currentBudget = GeneratePlaceholderData();
+		currentBudget = DB.LoadBudget();
+		GenerateCategories();
         transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
 
 		RefreshUI();
@@ -150,6 +152,7 @@ public partial class AppManager : Control
     {
 		currentBudget.DeleteTransaction(id);
 		RefreshUI();
+		DB.SaveBudget(currentBudget);
     }
 
 	private void OnCreateTransaction(string id, string name, float amount, string date, string category, bool isIncome)
@@ -162,6 +165,7 @@ public partial class AppManager : Control
 			currentBudget.CreateTransaction(name, amount, date, selectedCategory, isIncome);
 
 		RefreshUI();
+		DB.SaveBudget(currentBudget);
     }
 
 	  private void SaveCategoryGoal(string categoryId, float planned)
@@ -178,7 +182,7 @@ public partial class AppManager : Control
 	#endregion
 
     
-	#region Placeholder Date Generation
+	#region Placeholder Data Generation
 	private void CreateTransactionCategory(string name)
 	{
 		int listId;
@@ -197,6 +201,30 @@ public partial class AppManager : Control
 		}
 
 		TransactionCategories[name] = new TransactionCategory(){ListId = listId, Name = name, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
+	}
+
+	private void GenerateCategories()
+	{
+				List<string> categories = new List<string>{
+			"food", "car", "rent", "medical", "freelance", "other",
+		};
+
+		foreach (string c in categories)
+		{
+			CreateTransactionCategory(c);
+		}
+
+		foreach (TransactionCategory c in TransactionCategories.Values.ToArray())
+		{
+			CategoryGoals.Add(new CategoryGoal() {
+				BudgetId = currentBudget.Id,
+				CategoryId = c.Id,
+				Amount = 0,
+				CreatedAt = DateTime.Now,
+				UpdatedAt = DateTime.Now,
+			});
+		}
+
 	}
 
     private Budget GeneratePlaceholderData()
