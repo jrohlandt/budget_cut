@@ -28,6 +28,7 @@ public partial class AppManager : Control
 	VBoxContainer transactionList;
 	private static Budget currentBudget;
 	public static Dictionary<string, TransactionCategory> TransactionCategories = new Dictionary<string, TransactionCategory>();
+	public static List<CategoryGoal> CategoryGoals = new List<CategoryGoal>();
 
 	public override void _Ready()
     {
@@ -40,6 +41,7 @@ public partial class AppManager : Control
 	public override void _Process(double delta) {}
 
 	#region Refresh UI Methods
+
 	private void RefreshUI()
 	{
 		RefreshTotals();
@@ -80,9 +82,20 @@ public partial class AppManager : Control
 	private void RefreshCategoriesList()
 	{
 		VBoxContainer rows = GetNode<VBoxContainer>("RightControl/PaddingControl/BudgetBreakdown/Content/CategoriesList/Control/ScrollContainer/Rows");
+		foreach (Node r in rows.GetChildren())
+		{
+			r.QueueFree();
+		}
 		foreach (TransactionCategory c in TransactionCategories.Values.ToArray())
 		{
 			float actual = 0;
+			float planned = 0;
+			foreach (CategoryGoal g in CategoryGoals)
+			{
+				if (g.CategoryId == c.Id)
+					planned = g.Amount;
+			}
+
 			foreach (Transaction t in currentBudget.Transactions)
 			{
 				if (c.Id == t.Category.Id)
@@ -91,13 +104,17 @@ public partial class AppManager : Control
 			CategoryRow row = categoryRow.Instantiate<CategoryRow>();
 			row.Actual = actual;
 			row.CurrentCategory = c;
+			row.Planned = planned;
+			row.SaveCategoryGoal += SaveCategoryGoal;
 			rows.AddChild(row);
 		}
 	}
-	#endregion
 
-	#region Events (Click)
-	private void _on_create_transaction_button_pressed()
+    #endregion
+
+    #region Events (Click)
+
+    private void _on_create_transaction_button_pressed()
 	{
 		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
 		modal.Categories = TransactionCategories;
@@ -125,6 +142,7 @@ public partial class AppManager : Control
 		if (t != null) modal.CurrentTransaction = t;
 		AddChild(modal);
     }
+
 	#endregion
 
 	#region Events (CRUD)
@@ -145,10 +163,22 @@ public partial class AppManager : Control
 
 		RefreshUI();
     }
+
+	  private void SaveCategoryGoal(string categoryId, float planned)
+    {
+        foreach (CategoryGoal g in CategoryGoals)
+		{
+			if (g.CategoryId.ToString() == categoryId)
+				g.Amount = planned;
+				g.UpdatedAt = DateTime.Now;
+		}
+		RefreshCategoriesList();
+    }
+
 	#endregion
 
     
-
+	#region Placeholder Date Generation
 	private void CreateTransactionCategory(string name)
 	{
 		int listId;
@@ -189,6 +219,17 @@ public partial class AppManager : Control
 		foreach (string c in categories)
 		{
 			CreateTransactionCategory(c);
+		}
+
+		foreach (TransactionCategory c in TransactionCategories.Values.ToArray())
+		{
+			CategoryGoals.Add(new CategoryGoal() {
+				BudgetId = budget.Id,
+				CategoryId = c.Id,
+				Amount = 0,
+				CreatedAt = DateTime.Now,
+				UpdatedAt = DateTime.Now,
+			});
 		}
 
 		budget.Transactions.Add(new Transaction(){
@@ -388,4 +429,5 @@ public partial class AppManager : Control
 
 		return budget;
 	}
+	#endregion
 }

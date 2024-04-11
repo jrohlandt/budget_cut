@@ -4,6 +4,9 @@ using System;
 
 public partial class CategoryRow : Button
 {
+	[Signal]
+	public delegate void SaveCategoryGoalEventHandler(string categoryId, float planned);
+
 	public TransactionCategory CurrentCategory;
 	public float Actual = 0;
 	public float Planned = 0;
@@ -12,6 +15,7 @@ public partial class CategoryRow : Button
 	{
 		RefreshUI();
 		LineEdit le = GetNode<LineEdit>("Panel/Items/Planned");
+		le.Text = Planned.ToString();
 		// le.TextChanged += PlannedTextChanged;
 		le.TextSubmitted += PlannedTextChanged;
 	}
@@ -28,7 +32,13 @@ public partial class CategoryRow : Button
     {
 		try {
 			Planned = newText.ToFloat();
-			RefreshUI();
+			// No need to refresh UI here.
+			// row gets queue freed and recreated when CategoryGoal gets saved in AppManager.
+			EmitSignal(
+				SignalName.SaveCategoryGoal, 
+				CurrentCategory.Id.ToString(),
+				Planned
+			);
 		}
 		catch(Exception exception)
 		{
