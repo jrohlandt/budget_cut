@@ -15,10 +15,6 @@ run/main_scene="res://dashboard.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
-[autoload]
-
-Global="*res://global.gd"
-
 [dotnet]
 
 project/assembly_name="BudgetApp"
