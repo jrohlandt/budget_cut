@@ -19,10 +19,13 @@ public partial class AppManager : Control
 
 	[Export]
 	PackedScene deleteTransactionModal;
+
+	[Export]
+	PackedScene categoryRow;
+
 	#endregion
 
 	VBoxContainer transactionList;
-
 	private static Budget currentBudget;
 	public static Dictionary<string, TransactionCategory> TransactionCategories = new Dictionary<string, TransactionCategory>();
 
@@ -41,6 +44,7 @@ public partial class AppManager : Control
 	{
 		RefreshTotals();
 		RefreshTransactionList();
+		RefreshCategoriesList();
 	}
 
 	private void RefreshTotals()
@@ -72,6 +76,24 @@ public partial class AppManager : Control
             transactionList.AddChild(row);
         }
     }
+
+	private void RefreshCategoriesList()
+	{
+		VBoxContainer rows = GetNode<VBoxContainer>("RightControl/PaddingControl/BudgetBreakdown/Content/CategoriesList/Control/ScrollContainer/Rows");
+		foreach (TransactionCategory c in TransactionCategories.Values.ToArray())
+		{
+			float actual = 0;
+			foreach (Transaction t in currentBudget.Transactions)
+			{
+				if (c.Id == t.Category.Id)
+					actual += t.Amount;
+			}
+			CategoryRow row = categoryRow.Instantiate<CategoryRow>();
+			row.Actual = actual;
+			row.CurrentCategory = c;
+			rows.AddChild(row);
+		}
+	}
 	#endregion
 
 	#region Events (Click)

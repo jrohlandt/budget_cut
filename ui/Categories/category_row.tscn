@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpvf1nnlob7xd"]
+
+[ext_resource type="Script" path="res://scripts/CategoryRow.cs" id="1_okdn4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kc7ae"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="CategoryRow" type="Button"]
+custom_minimum_size = Vector2(0, 40)
+script = ExtResource("1_okdn4")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kc7ae")
+
+[node name="Items" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="Panel/Items"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "jjjjjjjjjjjj"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Items"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="Planned" type="LineEdit" parent="Panel/Items"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Items"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="Actual" type="Label" parent="Panel/Items"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100000,00"
+
+[node name="MarginContainer3" type="MarginContainer" parent="Panel/Items"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="Difference" type="Label" parent="Panel/Items"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100000,00"
