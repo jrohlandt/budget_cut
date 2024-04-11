@@ -31,11 +31,17 @@ public partial class AppManager : Control
         currentBudget = GeneratePlaceholderData();
         transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
 
-		RefreshTotals();
-        RefreshTransactionList();
+		RefreshUI();
     }
 
 	public override void _Process(double delta) {}
+
+	#region Refresh UI Methods
+	private void RefreshUI()
+	{
+		RefreshTotals();
+		RefreshTransactionList();
+	}
 
 	private void RefreshTotals()
 	{
@@ -52,7 +58,6 @@ public partial class AppManager : Control
 
     private void RefreshTransactionList()
     {
-		// Clear list
 		foreach (Node c in transactionList.GetChildren())
 		{
 			c.QueueFree();
@@ -67,17 +72,20 @@ public partial class AppManager : Control
             transactionList.AddChild(row);
         }
     }
+	#endregion
 
+	#region Events (Click)
+	private void _on_create_transaction_button_pressed()
+	{
+		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
+		modal.Categories = TransactionCategories;
+		modal.CreateTransaction += OnCreateTransaction;
+		AddChild(modal);
+	}
 
     private void OnDeleteTransactionButtonPressed(string id)
     {
-		Transaction tr = null;
-
-		foreach (Transaction t in currentBudget.Transactions)
-		{
-			if (t.Id.ToString() == id) tr = t;
-		}
-
+		Transaction tr = currentBudget.FindTransaction(id);
 		if (tr == null) return;
 
 		DeleteTransactionModal modal = deleteTransactionModal.Instantiate<DeleteTransactionModal>();
@@ -85,31 +93,6 @@ public partial class AppManager : Control
 		modal.DeleteTransaction += OnDeleteTransaction;
 		AddChild(modal); 
     }
-
-    private void OnDeleteTransaction(string id)
-    {
-		List<Transaction> list = new List<Transaction>();
-
-		foreach (Transaction t in currentBudget.Transactions)
-		{
-			if (t.Id.ToString() != id) 
-				list.Add(t);
-		}
-
-		currentBudget.Transactions = list;
-		RefreshTotals();
-		RefreshTransactionList();
-    }
-
-
-    private void _on_create_transaction_button_pressed()
-	{
-		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
-		modal.Categories = TransactionCategories;
-		modal.CreateTransaction += OnCreateTransaction;
-		AddChild(modal);
-		
-	}
 
 	private void ShowTransactionModal(string id)
     {
@@ -120,8 +103,16 @@ public partial class AppManager : Control
 		if (t != null) modal.CurrentTransaction = t;
 		AddChild(modal);
     }
+	#endregion
 
-    private void OnCreateTransaction(string id, string name, float amount, string date, string category, bool isIncome)
+	#region Events (CRUD)
+	private void OnDeleteTransaction(string id)
+    {
+		currentBudget.DeleteTransaction(id);
+		RefreshUI();
+    }
+
+	private void OnCreateTransaction(string id, string name, float amount, string date, string category, bool isIncome)
     {
 		TransactionCategory selectedCategory = TransactionCategories[category];
 
@@ -130,9 +121,11 @@ public partial class AppManager : Control
 		else
 			currentBudget.CreateTransaction(name, amount, date, selectedCategory, isIncome);
 
-		RefreshTotals();
-		RefreshTransactionList();
+		RefreshUI();
     }
+	#endregion
+
+    
 
 	private void CreateTransactionCategory(string name)
 	{

@@ -78,4 +78,19 @@ public class Budget
 
         return tr;
     }
+
+    public List<Transaction> DeleteTransaction(string id)
+    {
+        List<Transaction> list = new List<Transaction>();
+
+		foreach (Transaction t in Transactions)
+		{
+			if (t.Id.ToString() != id) 
+				list.Add(t);
+		}
+
+		Transactions = list;
+
+        return Transactions;
+    }
 }
