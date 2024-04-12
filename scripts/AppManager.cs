@@ -36,8 +36,9 @@ public partial class AppManager : Control
         // currentBudget = GeneratePlaceholderData();
 		currentBudget = DB.LoadBudget();
 		TransactionCategories = DB.LoadCategories();
-        transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
+		CategoryGoals = DB.LoadCategoryGoals(currentBudget.Id, TransactionCategories);
 
+        transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
 		RefreshUI();
     }
 
@@ -178,6 +179,7 @@ public partial class AppManager : Control
 				g.UpdatedAt = DateTime.Now;
 		}
 		RefreshCategoriesList();
+		DB.SaveCategoryGoals(CategoryGoals);
     }
 
 	#endregion

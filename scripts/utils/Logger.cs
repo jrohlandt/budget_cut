@@ -13,7 +13,7 @@ public static class Logger
         // todo 
         
         if (AppGlobals.Debug) {
-            GD.Print("Debug Log");
+            GD.Print("Debug Log", JsonConvert.SerializeObject(data, Formatting.Indented));
         }
     }
 }

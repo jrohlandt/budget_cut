@@ -67,31 +67,20 @@ public static class DB
         }
         catch (Exception exception) 
         {
-            Dictionary<string, TransactionCategory> result = new();
+            Dictionary<string, TransactionCategory> categories = new();
             Logger.Log(exception);
-            List<string> categories = new List<string>{
+            List<string> categoryNames = new List<string>{
 			    "food", "car", "rent", "medical", "freelance", "other",
 		    };
 
-            foreach (string c in categories)
+            foreach (string c in categoryNames)
             {
-                TransactionCategory tt = CreateTransactionCategory(result, c);
-                result[tt.Name] = tt;
+                TransactionCategory tt = CreateTransactionCategory(categories, c);
+                categories[tt.Name] = tt;
             }
 
-            // foreach (TransactionCategory c in TransactionCategories.Values.ToArray())
-            // {
-            //     CategoryGoals.Add(new CategoryGoal() {
-            //         BudgetId = currentBudget.Id,
-            //         CategoryId = c.Id,
-            //         Amount = 0,
-            //         CreatedAt = DateTime.Now,
-            //         UpdatedAt = DateTime.Now,
-            //     });
-            // }
-
-                SaveCategories(result);
-                return LoadCategories();
+            SaveCategories(categories);
+            return LoadCategories();
             }
 
     }
@@ -116,11 +105,49 @@ public static class DB
 		return new TransactionCategory(){ListId = listId, Name = name, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
 	}
 
+    public static void SaveCategoryGoals(List<CategoryGoal> goals)
+    {
+        try 
+        {
+            FileAccess file = FileAccess.Open("user://goals.json", FileAccess.ModeFlags.Write);
+            string json = JsonConvert.SerializeObject(goals);
+            file.StoreString(json);
+            file.Close();
+        }
+        catch (Exception ex)
+        {
+            Logger.Log(ex);
+        }
+    }
+    public static List<CategoryGoal> LoadCategoryGoals(Guid budgetId, Dictionary<string, TransactionCategory> categories)
+    {
+        try 
+        {
+            FileAccess file = FileAccess.Open("user://goals.json", FileAccess.ModeFlags.Read);
+            string json = file.GetAsText();
+            List<CategoryGoal> result = JsonConvert.DeserializeObject<List<CategoryGoal>>(json) 
+                ?? throw new Exception();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Logger.Log(ex);
 
-    // public void LoadCategoryGoals()
-    // {
-    //     FileAccess
-    // }
+            List<CategoryGoal> goals = new();
+            foreach (TransactionCategory c in categories.Values.ToArray())
+            {
+                goals.Add(new CategoryGoal() {
+                    BudgetId = budgetId,
+                    CategoryId = c.Id,
+                    Amount = 0,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                });
+            }
+            SaveCategoryGoals(goals);
+            return goals;
+        }
+    }
 
 
 }
