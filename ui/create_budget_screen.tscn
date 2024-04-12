@@ -1,0 +1,169 @@
+[gd_scene load_steps=3 format=3 uid="uid://cl3mebd6catc5"]
+
+[ext_resource type="Script" path="res://scripts/CreateBudgetScreen.cs" id="1_upk6c"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7xxm0"]
+bg_color = Color(0.160784, 0.160784, 0.160784, 1)
+
+[node name="CreateBudgetScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_upk6c")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7xxm0")
+
+[node name="InitialUI" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="InitialUI"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Budget Cut"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="InitialUI"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="InitialUI"]
+layout_mode = 2
+alignment = 1
+
+[node name="LoadFormButton" type="Button" parent="InitialUI/HBoxContainer"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Create Budget"
+
+[node name="Control" type="Control" parent="."]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PaddingControl" type="Control" parent="Control"]
+layout_mode = 1
+anchor_left = 0.05
+anchor_top = 0.05
+anchor_right = 0.95
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Form" type="VBoxContainer" parent="Control/PaddingControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="Control/PaddingControl/Form"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Control/PaddingControl/Form/Header"]
+layout_mode = 2
+text = "Budget Details
+"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Control/PaddingControl/Form"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Name" type="HBoxContainer" parent="Control/PaddingControl/Form"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/PaddingControl/Form/Name"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Name"
+
+[node name="LineEdit" type="LineEdit" parent="Control/PaddingControl/Form/Name"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StartDate" type="HBoxContainer" parent="Control/PaddingControl/Form"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/PaddingControl/Form/StartDate"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Start Date"
+
+[node name="LineEdit" type="LineEdit" parent="Control/PaddingControl/Form/StartDate"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EndDate" type="HBoxContainer" parent="Control/PaddingControl/Form"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/PaddingControl/Form/EndDate"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "End Date"
+
+[node name="LineEdit" type="LineEdit" parent="Control/PaddingControl/Form/EndDate"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer3" type="MarginContainer" parent="Control/PaddingControl/Form"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Control/PaddingControl/Form"]
+layout_mode = 2
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="Control/PaddingControl/Form/Buttons"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/PaddingControl/Form/Buttons"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="CreateButton" type="Button" parent="Control/PaddingControl/Form/Buttons"]
+layout_mode = 2
+text = "Create
+"

@@ -9,6 +9,10 @@ public partial class AppManager : Control
 {
 
 	#region Exports
+
+	[Export]
+	PackedScene createBudgetScreen;
+
 	[Export]
 	PackedScene transactionRow;
 
@@ -33,18 +37,35 @@ public partial class AppManager : Control
 
 	public override void _Ready()
     {
-        // currentBudget = GeneratePlaceholderData();
-		currentBudget = DB.LoadBudget();
-		TransactionCategories = DB.LoadCategories();
-		CategoryGoals = DB.LoadCategoryGoals(currentBudget.Id, TransactionCategories);
-
         transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
-		RefreshUI();
+		GetNode<Button>("CreateNewBudgetButton").Pressed += ShowCreateBudgetScreen;
+
+		List<string> budgetList = DB.LoadBudgetList();
+		if (budgetList == null) {
+			ShowCreateBudgetScreen();
+			return;
+		}
+		else
+		{
+			// load most recently added budget
+			string budgetId = budgetList[budgetList.Count - 1];
+			currentBudget = DB.LoadBudget(budgetId);
+			TransactionCategories = DB.LoadCategories();
+			CategoryGoals = DB.LoadPlanned(currentBudget.Id);
+			RefreshUI();
+		}
     }
 
 	public override void _Process(double delta) {}
 
 	#region Refresh UI Methods
+
+	private void ShowCreateBudgetScreen()
+	{
+		CreateBudgetScreen bScreen = createBudgetScreen.Instantiate<CreateBudgetScreen>();
+		bScreen.CreateBudget += OnCreateBudget;
+		AddChild(bScreen);
+	}
 
 	private void RefreshUI()
 	{
@@ -117,7 +138,7 @@ public partial class AppManager : Control
     #endregion
 
     #region Events (Click)
-
+		
     private void _on_create_transaction_button_pressed()
 	{
 		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
@@ -150,6 +171,22 @@ public partial class AppManager : Control
 	#endregion
 
 	#region Events (CRUD)
+
+	private void OnCreateBudget(string name, string startDate, string endDate)
+	{
+		DB.CreateBudget(name, startDate, endDate);
+
+		List<string> budgetList = DB.LoadBudgetList();
+		string budgetId = budgetList[budgetList.Count - 1];
+		currentBudget = DB.LoadBudget(budgetId);
+
+		TransactionCategories = DB.LoadCategories();
+		
+		DB.CreatePlanned(currentBudget.Id, TransactionCategories);
+		CategoryGoals = DB.LoadPlanned(currentBudget.Id);
+		RefreshUI();
+	}
+
 	private void OnDeleteTransaction(string id)
     {
 		currentBudget.DeleteTransaction(id);
@@ -179,286 +216,9 @@ public partial class AppManager : Control
 				g.UpdatedAt = DateTime.Now;
 		}
 		RefreshCategoriesList();
-		DB.SaveCategoryGoals(CategoryGoals);
+		DB.SavePlanned(currentBudget.Id, CategoryGoals);
     }
 
 	#endregion
 
-    
-	#region Placeholder Data Generation
-	private void CreateTransactionCategory(string name)
-	{
-		int listId;
-		if (TransactionCategories.Count == 0)
-		{
-			listId = 0;
-		}
-		else 
-		{
-			int highestId = 0;
-			foreach (var c in TransactionCategories.Values.ToArray())
-			{
-				if (c.ListId > highestId) highestId = c.ListId;
-			}
-			listId = highestId + 1;
-		}
-
-		TransactionCategories[name] = new TransactionCategory(){ListId = listId, Name = name, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now};
-	}
-
-	private void GenerateCategories()
-	{
-		List<string> categories = new List<string>{
-			"food", "car", "rent", "medical", "freelance", "other",
-		};
-
-		foreach (string c in categories)
-		{
-			CreateTransactionCategory(c);
-		}
-
-		foreach (TransactionCategory c in TransactionCategories.Values.ToArray())
-		{
-			CategoryGoals.Add(new CategoryGoal() {
-				BudgetId = currentBudget.Id,
-				CategoryId = c.Id,
-				Amount = 0,
-				CreatedAt = DateTime.Now,
-				UpdatedAt = DateTime.Now,
-			});
-		}
-
-	}
-
-    private Budget GeneratePlaceholderData()
-	{
-		Budget budget = new Budget()
-		{
-			Name = "Monthly Budget",
-			StartDate = new DateTime(2024, 04, 01),
-			EndDate = new DateTime(2024, 04, 30),
-			Transactions = new List<Transaction>(),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		};
-
-
-		List<string> categories = new List<string>{
-			"food", "car", "rent", "medical", "freelance", "other",
-		};
-
-		foreach (string c in categories)
-		{
-			CreateTransactionCategory(c);
-		}
-
-		foreach (TransactionCategory c in TransactionCategories.Values.ToArray())
-		{
-			CategoryGoals.Add(new CategoryGoal() {
-				BudgetId = budget.Id,
-				CategoryId = c.Id,
-				Amount = 0,
-				CreatedAt = DateTime.Now,
-				UpdatedAt = DateTime.Now,
-			});
-		}
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Hamburger patties beef 800g",
-			Amount = 109.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Super Groomers Puppy Parlor PTY LTD",
-			Amount = 41013f,
-			Category = TransactionCategories["freelance"],
-			TransactionDate = new DateTime(2024, 05, 01),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-			IsIncome = true,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Pork sausages 800g",
-			Amount = 60f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Rent",
-			Amount = 9000,
-			Category = TransactionCategories["rent"],
-			TransactionDate = new DateTime(2024, 04, 30),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Car Insurance",
-			Amount = 1053,
-			Category = TransactionCategories["car"],
-			TransactionDate = new DateTime(2024, 04, 30),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Medical Insurance",
-			Amount = 2700,
-			Category = TransactionCategories["medical"],
-			TransactionDate = new DateTime(2024, 04, 30),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 200f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		budget.Transactions.Add(new Transaction(){
-			BudgetId = budget.Id,
-			Name = "Milk",
-			Amount = 20.99f,
-			Category = TransactionCategories["food"],
-			TransactionDate = new DateTime(2024, 04, 03),
-			CreatedAt = DateTime.Now,
-			UpdatedAt = DateTime.Now,
-		});
-
-		return budget;
-	}
-	#endregion
 }
