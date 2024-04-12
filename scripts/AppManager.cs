@@ -1,4 +1,5 @@
 using Godot;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ public partial class AppManager : Control
     {
         // currentBudget = GeneratePlaceholderData();
 		currentBudget = DB.LoadBudget();
-		GenerateCategories();
+		TransactionCategories = DB.LoadCategories();
         transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
 
 		RefreshUI();
@@ -205,7 +206,7 @@ public partial class AppManager : Control
 
 	private void GenerateCategories()
 	{
-				List<string> categories = new List<string>{
+		List<string> categories = new List<string>{
 			"food", "car", "rent", "medical", "freelance", "other",
 		};
 
