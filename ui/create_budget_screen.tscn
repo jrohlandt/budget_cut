@@ -58,7 +58,20 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = "Create Budget"
 
+[node name="MarginContainer2" type="MarginContainer" parent="InitialUI"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Cancel" type="HBoxContainer" parent="InitialUI"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="Button" parent="InitialUI/Cancel"]
+layout_mode = 2
+text = "< Back"
+
 [node name="Control" type="Control" parent="."]
+visible = false
 custom_minimum_size = Vector2(400, 250)
 layout_mode = 1
 anchors_preset = 8

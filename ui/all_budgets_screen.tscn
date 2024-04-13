@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3 uid="uid://cx1v3scw33bdp"]
+
+[ext_resource type="Script" path="res://scripts/AllBudgetsScreen.cs" id="1_y54v3"]
+[ext_resource type="PackedScene" uid="uid://do8tgq3y02d7c" path="res://ui/all_budgets_list_item.tscn" id="2_fdplh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7xxm0"]
+bg_color = Color(0.160784, 0.160784, 0.160784, 1)
+
+[node name="AllBudgetsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_y54v3")
+allBudgetsListItem = ExtResource("2_fdplh")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7xxm0")
+
+[node name="UI" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UI"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Budget Cut"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer2" type="MarginContainer" parent="UI"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
+custom_minimum_size = Vector2(0, 309)
+layout_mode = 2
+
+[node name="List" type="VBoxContainer" parent="UI/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Cancel" type="HBoxContainer" parent="UI"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="Button" parent="UI/Cancel"]
+layout_mode = 2
+text = "< Back"

@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://do8tgq3y02d7c"]
+
+[ext_resource type="Script" path="res://scripts/AllBudgetsListItem.cs" id="1_wiwir"]
+
+[node name="AllBudgetsListItem" type="HBoxContainer"]
+script = ExtResource("1_wiwir")
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+text = "My budget July"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="Duration" type="Label" parent="."]
+layout_mode = 2
+text = "2021-04-12 - 2021-04-30 "
+
+[node name="OpenButton" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="Button" type="Button" parent="OpenButton"]
+layout_mode = 2
+text = "Open"

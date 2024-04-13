@@ -1,8 +1,6 @@
 using System;
 using Godot;
 
-using System;
-
 namespace BudgetApp;
 
 public partial class TransactionRow : HBoxContainer

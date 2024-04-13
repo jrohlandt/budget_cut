@@ -14,6 +14,9 @@ public partial class AppManager : Control
 	PackedScene createBudgetScreen;
 
 	[Export]
+	PackedScene allBudgetsScreen;
+
+	[Export]
 	PackedScene transactionRow;
 
 	[Export]
@@ -39,10 +42,11 @@ public partial class AppManager : Control
     {
         transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
 		GetNode<Button>("CreateNewBudgetButton").Pressed += ShowCreateBudgetScreen;
+		GetNode<Button>("ShowAllBudgetsButton").Pressed += ShowAllBudgetsList;
 
 		List<string> budgetList = DB.LoadBudgetList();
 		if (budgetList == null) {
-			ShowCreateBudgetScreen();
+			ShowCreateBudgetScreen(false);
 			return;
 		}
 		else
@@ -56,18 +60,40 @@ public partial class AppManager : Control
 		}
     }
 
-	public override void _Process(double delta) {}
+    public override void _Process(double delta) {}
 
 	#region Refresh UI Methods
 
 	private void ShowCreateBudgetScreen()
 	{
+		ShowCreateBudgetScreen(true);
+	}
+	
+	private void ShowCreateBudgetScreen(bool showCancelButton = true)
+	{
 		CreateBudgetScreen bScreen = createBudgetScreen.Instantiate<CreateBudgetScreen>();
 		bScreen.CreateBudget += OnCreateBudget;
+		bScreen.ShowCancelButton = showCancelButton;
 		AddChild(bScreen);
 	}
 
-	private void RefreshUI()
+	private void ShowAllBudgetsList()
+    {
+        AllBudgetsScreen bscreen = allBudgetsScreen.Instantiate<AllBudgetsScreen>();
+		bscreen.LoadBudget += LoadBudget;
+		AddChild(bscreen);
+		
+    }
+
+    private void LoadBudget(string budgetId)
+    {
+        currentBudget = DB.LoadBudget(budgetId);
+		TransactionCategories = DB.LoadCategories();
+		CategoryGoals = DB.LoadPlanned(currentBudget.Id);
+		RefreshUI();
+    }
+
+    private void RefreshUI()
 	{
 		RefreshTotals();
 		RefreshTransactionList();

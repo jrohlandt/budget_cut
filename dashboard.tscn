@@ -1,20 +1,25 @@
-[gd_scene load_steps=12 format=3 uid="uid://vkkif0ektt5p"]
+[gd_scene load_steps=15 format=3 uid="uid://vkkif0ektt5p"]
 
 [ext_resource type="Script" path="res://scripts/AppManager.cs" id="1_5qdfg"]
 [ext_resource type="PackedScene" uid="uid://cp66j6d5jcadn" path="res://ui/transactions/transaction_row.tscn" id="2_bcvfx"]
 [ext_resource type="PackedScene" uid="uid://cl3mebd6catc5" path="res://ui/create_budget_screen.tscn" id="2_t0q70"]
+[ext_resource type="PackedScene" uid="uid://cx1v3scw33bdp" path="res://ui/all_budgets_screen.tscn" id="3_4u4kt"]
 [ext_resource type="Texture2D" uid="uid://ddqghyrc0dkjc" path="res://assets/pie_chart_circle_income_150px.png" id="3_dx10t"]
 [ext_resource type="PackedScene" uid="uid://dmh6uc2wipvb3" path="res://ui/transactions/transaction_create_modal.tscn" id="3_pe00i"]
 [ext_resource type="PackedScene" uid="uid://dejie8dpqp3ev" path="res://ui/transactions/transactions_list.tscn" id="4_ekigb"]
 [ext_resource type="Texture2D" uid="uid://cimtg2co317t5" path="res://assets/pie_chart_circle_expenses_150px.png" id="4_lekvb"]
 [ext_resource type="PackedScene" uid="uid://ca8mu7csaqxlb" path="res://ui/transactions/delete_transaction_modal.tscn" id="4_u2w32"]
 [ext_resource type="PackedScene" uid="uid://bpvf1nnlob7xd" path="res://ui/Categories/category_row.tscn" id="8_2teuj"]
+[ext_resource type="Texture2D" uid="uid://s7jesdbb2v1d" path="res://icon.svg" id="10_5gki2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pys3j"]
 bg_color = Color(0.121569, 0.121569, 0.121569, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4odk2"]
 bg_color = Color(0.172549, 0.172549, 0.172549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v70kl"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 1)
 
 [node name="Dashboard" type="Control"]
 layout_mode = 3
@@ -25,6 +30,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5qdfg")
 createBudgetScreen = ExtResource("2_t0q70")
+allBudgetsScreen = ExtResource("3_4u4kt")
 transactionRow = ExtResource("2_bcvfx")
 transactionCreateModal = ExtResource("3_pe00i")
 deleteTransactionModal = ExtResource("4_u2w32")
@@ -43,6 +49,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_pys3j")
 layout_mode = 1
 anchor_right = 0.5
 anchor_bottom = 1.0
+offset_left = 50.0
 
 [node name="PaddingControl" type="Control" parent="LeftControl"]
 layout_mode = 1
@@ -325,11 +332,52 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="CreateNewBudgetButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 1015.0
-offset_top = 19.0
-offset_right = 1131.0
-offset_bottom = 50.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_top = 15.0
+offset_right = -15.0
+grow_horizontal = 0
 text = "+ New Budget"
+
+[node name="ShowAllBudgetsButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_top = 54.0
+offset_right = -15.0
+grow_horizontal = 0
+text = "Show All Budgets"
+
+[node name="NavBar" type="Control" parent="."]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="NavBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v70kl")
+
+[node name="TextureButton" type="TextureButton" parent="NavBar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.125
+anchor_right = 1.0
+anchor_bottom = 0.125
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("10_5gki2")
+ignore_texture_size = true
+stretch_mode = 0
 
 [connection signal="pressed" from="LeftControl/PaddingControl/HBoxContainer/CreateTransactionButton" to="." method="_on_create_transaction_button_pressed"]

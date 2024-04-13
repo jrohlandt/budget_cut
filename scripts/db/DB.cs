@@ -83,6 +83,18 @@ public static class DB
     {
         return LoadBudget(budgetId.ToString());
     }
+
+    public static List<Budget> LoadAllBudgets()
+    {
+        List<string> budgetIds = LoadBudgetList();
+        List<Budget> budgets = new();
+
+        foreach (string id in budgetIds)
+        {
+            budgets.Add(LoadBudget(id));
+        }
+        return budgets;
+    }
     
     public static void CreateEmptyBudgetList()
     {

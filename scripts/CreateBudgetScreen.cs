@@ -10,6 +10,8 @@ public partial class CreateBudgetScreen : Control
 
 	VBoxContainer InitialUI;
 	Control FormContainer;
+	public bool ShowCancelButton = true;
+	Button CancelButton;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -21,17 +23,35 @@ public partial class CreateBudgetScreen : Control
 		FormContainer.Visible = false;
 
 		GetNode<Button>("InitialUI/HBoxContainer/LoadFormButton").Pressed += ShowForm;
+
+		CancelButton = InitialUI.GetNode<Button>("Cancel/Button");
+		if (ShowCancelButton)
+		{
+			CancelButton.Visible = true;
+			CancelButton.Pressed += CancelButtonPressed;
+		}
+		else 
+		{
+			CancelButton.Visible = false;
+			
+		}
 	}
+
+    private void CancelButtonPressed()
+    {
+        QueueFree();
+    }
+
 
     private void ShowForm()
     {
 		InitialUI.Visible = false;
         FormContainer.Visible = true;
-		FormContainer.GetNode<Button>("PaddingControl/Form/Buttons/CancelButton").Pressed += CancelButtonPressed;
-		FormContainer.GetNode<Button>("PaddingControl/Form/Buttons/CreateButton").Pressed += CreateButtonPressed;
+		FormContainer.GetNode<Button>("PaddingControl/Form/Buttons/CancelButton").Pressed += FormCancelButtonPressed;
+		FormContainer.GetNode<Button>("PaddingControl/Form/Buttons/CreateButton").Pressed += FormCreateButtonPressed;
     }
 
-    private void CreateButtonPressed()
+    private void FormCreateButtonPressed()
     {
         string name = FormContainer.GetNode<LineEdit>("PaddingControl/Form/Name/LineEdit").Text;
         string startDate = FormContainer.GetNode<LineEdit>("PaddingControl/Form/StartDate/LineEdit").Text;
@@ -42,7 +62,7 @@ public partial class CreateBudgetScreen : Control
     }
 
 
-    private void CancelButtonPressed()
+    private void FormCancelButtonPressed()
     {
        	InitialUI.Visible = true;
 		FormContainer.Visible = false;
