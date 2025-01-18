@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=3 uid="uid://vkkif0ektt5p"]
 
-[ext_resource type="Script" path="res://scripts/AppManager.cs" id="1_5qdfg"]
+[ext_resource type="Script" uid="uid://xq422i4w6bew" path="res://scripts/AppManager.cs" id="1_5qdfg"]
 [ext_resource type="PackedScene" uid="uid://cp66j6d5jcadn" path="res://ui/transactions/transaction_row.tscn" id="2_bcvfx"]
 [ext_resource type="PackedScene" uid="uid://cl3mebd6catc5" path="res://ui/create_budget_screen.tscn" id="2_t0q70"]
 [ext_resource type="PackedScene" uid="uid://cx1v3scw33bdp" path="res://ui/all_budgets_screen.tscn" id="3_4u4kt"]

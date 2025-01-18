@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cl3mebd6catc5"]
 
-[ext_resource type="Script" path="res://scripts/CreateBudgetScreen.cs" id="1_upk6c"]
+[ext_resource type="Script" uid="uid://b6w5fhgemvtwr" path="res://scripts/CreateBudgetScreen.cs" id="1_upk6c"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7xxm0"]
 bg_color = Color(0.160784, 0.160784, 0.160784, 1)
