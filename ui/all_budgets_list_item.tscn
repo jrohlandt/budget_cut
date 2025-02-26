@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://do8tgq3y02d7c"]
 
-[ext_resource type="Script" path="res://scripts/AllBudgetsListItem.cs" id="1_wiwir"]
+[ext_resource type="Script" uid="uid://u0alr5bghe3a" path="res://scripts/AllBudgetsListItem.cs" id="1_wiwir"]
 
 [node name="AllBudgetsListItem" type="HBoxContainer"]
 script = ExtResource("1_wiwir")
