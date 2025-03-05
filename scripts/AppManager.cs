@@ -39,13 +39,14 @@ public partial class AppManager : Control
 	public static List<CategoryGoal> CategoryGoals = new List<CategoryGoal>();
 
 	public override void _Ready()
-    {
-        transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
+	{
+		transactionList = GetNode<VBoxContainer>("LeftControl/PaddingControl/Content/VBoxContainer/TransactionsList/VBoxContainer");
 		GetNode<Button>("CreateNewBudgetButton").Pressed += ShowCreateBudgetScreen;
 		GetNode<Button>("ShowAllBudgetsButton").Pressed += ShowAllBudgetsList;
 
 		List<string> budgetList = DB.LoadBudgetList();
-		if (budgetList == null) {
+		if (budgetList == null)
+		{
 			ShowCreateBudgetScreen(false);
 			return;
 		}
@@ -58,9 +59,9 @@ public partial class AppManager : Control
 			CategoryGoals = DB.LoadPlanned(currentBudget.Id);
 			RefreshUI();
 		}
-    }
+	}
 
-    public override void _Process(double delta) {}
+	public override void _Process(double delta) { }
 
 	#region Refresh UI Methods
 
@@ -68,7 +69,7 @@ public partial class AppManager : Control
 	{
 		ShowCreateBudgetScreen(true);
 	}
-	
+
 	private void ShowCreateBudgetScreen(bool showCancelButton = true)
 	{
 		CreateBudgetScreen bScreen = createBudgetScreen.Instantiate<CreateBudgetScreen>();
@@ -78,22 +79,22 @@ public partial class AppManager : Control
 	}
 
 	private void ShowAllBudgetsList()
-    {
-        AllBudgetsScreen bscreen = allBudgetsScreen.Instantiate<AllBudgetsScreen>();
+	{
+		AllBudgetsScreen bscreen = allBudgetsScreen.Instantiate<AllBudgetsScreen>();
 		bscreen.LoadBudget += LoadBudget;
 		AddChild(bscreen);
-		
-    }
 
-    private void LoadBudget(string budgetId)
-    {
-        currentBudget = DB.LoadBudget(budgetId);
+	}
+
+	private void LoadBudget(string budgetId)
+	{
+		currentBudget = DB.LoadBudget(budgetId);
 		TransactionCategories = DB.LoadCategories();
 		CategoryGoals = DB.LoadPlanned(currentBudget.Id);
 		RefreshUI();
-    }
+	}
 
-    private void RefreshUI()
+	private void RefreshUI()
 	{
 		RefreshTotals();
 		RefreshTransactionList();
@@ -113,22 +114,22 @@ public partial class AppManager : Control
 		piechart.Value = expenses;
 	}
 
-    private void RefreshTransactionList()
-    {
+	private void RefreshTransactionList()
+	{
 		foreach (Node c in transactionList.GetChildren())
 		{
 			c.QueueFree();
 		}
 
-        for (int i = 0; i < currentBudget.Transactions.Count; i++)
-        {
-            TransactionRow row = transactionRow.Instantiate<TransactionRow>();
-            row.CurrentTransaction = currentBudget.Transactions[i];
-			row.DeleteTransactionPressed += OnDeleteTransactionButtonPressed; 
+		for (int i = 0; i < currentBudget.Transactions.Count; i++)
+		{
+			TransactionRow row = transactionRow.Instantiate<TransactionRow>();
+			row.CurrentTransaction = currentBudget.Transactions[i];
+			row.DeleteTransactionPressed += OnDeleteTransactionButtonPressed;
 			row.ShowTransactionModal += ShowTransactionModal;
-            transactionList.AddChild(row);
-        }
-    }
+			transactionList.AddChild(row);
+		}
+	}
 
 	private void RefreshCategoriesList()
 	{
@@ -161,11 +162,11 @@ public partial class AppManager : Control
 		}
 	}
 
-    #endregion
+	#endregion
 
-    #region Events (Click)
-		
-    private void _on_create_transaction_button_pressed()
+	#region Events (Click)
+
+	private void _on_create_transaction_button_pressed()
 	{
 		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
 		modal.Categories = TransactionCategories;
@@ -173,26 +174,26 @@ public partial class AppManager : Control
 		AddChild(modal);
 	}
 
-    private void OnDeleteTransactionButtonPressed(string id)
-    {
+	private void OnDeleteTransactionButtonPressed(string id)
+	{
 		Transaction tr = currentBudget.FindTransaction(id);
 		if (tr == null) return;
 
 		DeleteTransactionModal modal = deleteTransactionModal.Instantiate<DeleteTransactionModal>();
 		modal.CurrentTransaction = tr;
 		modal.DeleteTransaction += OnDeleteTransaction;
-		AddChild(modal); 
-    }
+		AddChild(modal);
+	}
 
 	private void ShowTransactionModal(string id)
-    {
+	{
 		TransactionCreateModal modal = transactionCreateModal.Instantiate<TransactionCreateModal>();
 		modal.Categories = TransactionCategories;
 		modal.CreateTransaction += OnCreateTransaction;
 		Transaction t = currentBudget.FindTransaction(id);
 		if (t != null) modal.CurrentTransaction = t;
 		AddChild(modal);
-    }
+	}
 
 	#endregion
 
@@ -207,21 +208,21 @@ public partial class AppManager : Control
 		currentBudget = DB.LoadBudget(budgetId);
 
 		TransactionCategories = DB.LoadCategories();
-		
+
 		DB.CreatePlanned(currentBudget.Id, TransactionCategories);
 		CategoryGoals = DB.LoadPlanned(currentBudget.Id);
 		RefreshUI();
 	}
 
 	private void OnDeleteTransaction(string id)
-    {
+	{
 		currentBudget.DeleteTransaction(id);
 		RefreshUI();
 		DB.SaveBudget(currentBudget);
-    }
+	}
 
 	private void OnCreateTransaction(string id, string name, float amount, string date, string category, bool isIncome)
-    {
+	{
 		TransactionCategory selectedCategory = TransactionCategories[category];
 
 		if (id != "")
@@ -231,19 +232,19 @@ public partial class AppManager : Control
 
 		RefreshUI();
 		DB.SaveBudget(currentBudget);
-    }
+	}
 
-	  private void SaveCategoryGoal(string categoryId, float planned)
-    {
-        foreach (CategoryGoal g in CategoryGoals)
+	private void SaveCategoryGoal(string categoryId, float planned)
+	{
+		foreach (CategoryGoal g in CategoryGoals)
 		{
 			if (g.CategoryId.ToString() == categoryId)
 				g.Amount = planned;
-				g.UpdatedAt = DateTime.Now;
+			g.UpdatedAt = DateTime.Now;
 		}
 		RefreshCategoriesList();
 		DB.SavePlanned(currentBudget.Id, CategoryGoals);
-    }
+	}
 
 	#endregion
 
